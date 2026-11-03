@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cinema Palette</title>
+  <meta name="description" content="Turn any movie into a colour barcode, right in your browser. Your video never leaves your device.">
+  <meta name="color-scheme" content="dark light">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Crect width='2' height='8' fill='%23c8553d'/%3E%3Crect x='2' width='2' height='8' fill='%23f2c14e'/%3E%3Crect x='4' width='2' height='8' fill='%232a9d8f'/%3E%3Crect x='6' width='2' height='8' fill='%23264f8c'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="js/app.js"></script>
+</head>
+<body>
+  <header class="top">
+    <div class="wrap">
+      <div class="brand">
+        <span class="mark" aria-hidden="true"></span>
+        <div>
+          <h1>Cinema Palette</h1>
+          <p class="tag">Turn a movie into a colour barcode.</p>
+        </div>
+      </div>
+      <a class="gh" href="https://github.com/Ovalvoi/Cinema-Color-Pallete-generator">GitHub</a>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <!-- 1. pick a file -->
+    <section id="pick">
+      <label id="drop" class="drop" for="file">
+        <input id="file" type="file" accept="video/*,.mkv,.mov,.m4v,.avi,.webm,.mp4">
+        <span class="drop-title">Drop a movie here</span>
+        <span class="drop-sub">or <u>choose a file</u> · MP4, WebM, MOV, MKV</span>
+        <span class="privacy">Processed on your device. Nothing is uploaded, so even a 20&nbsp;GB file starts instantly.</span>
+      </label>
+
+      <details class="opts" open>
+        <summary>Settings</summary>
+        <div class="grid">
+          <label>Detail
+            <select id="samples">
+              <option value="300">Quick: 300 slices</option>
+              <option value="800" selected>Standard: 800 slices</option>
+              <option value="1500">Detailed: 1500 slices</option>
+              <option value="3000">Ultra: 3000 slices</option>
+            </select>
+          </label>
+          <label>Colour
+            <select id="mode">
+              <option value="average">Average of each moment</option>
+              <option value="dominant">Dominant (more vivid)</option>
+            </select>
+          </label>
+          <label>Start <input id="start" type="text" placeholder="0:00" inputmode="numeric" autocomplete="off"></label>
+          <label>End <input id="end" type="text" placeholder="end of film" inputmode="numeric" autocomplete="off"></label>
+          <label>Parallel decoders <span class="val" id="parallelVal"></span>
+            <input id="parallel" type="range" min="1" max="8" step="1">
+          </label>
+          <div class="checks">
+            <label class="check"><input id="crop" type="checkbox" checked> Remove letterbox bars</label>
+            <label class="check" id="fastWrap" hidden><input id="fast" type="checkbox" checked> Keyframe seeking (faster)</label>
+          </div>
+        </div>
+        <p class="hint">Tip: set <b>End</b> before the credits roll, or the barcode finishes with a long dark band.</p>
+      </details>
+    </section>
+
+    <!-- 2. progress -->
+    <section id="work" hidden>
+      <div class="work-head">
+        <div>
+          <div id="fileName" class="file-name"></div>
+          <div id="status" class="status" aria-live="polite"></div>
+        </div>
+        <button id="cancel" class="btn ghost" type="button">Cancel</button>
+      </div>
+      <div class="bar"><div id="barFill"></div></div>
+    </section>
+
+    <!-- shared preview -->
+    <section id="stage" hidden>
+      <div class="canvas-wrap" id="canvasWrap"><canvas id="view"></canvas></div>
+    </section>
+
+    <!-- 3. result -->
+    <section id="result" hidden>
+      <div class="toolbar">
+        <div class="seg" role="radiogroup" aria-label="Style">
+          <button type="button" data-style="barcode" aria-pressed="true">Barcode</button>
+          <button type="button" data-style="circle" aria-pressed="false">Ring</button>
+        </div>
+        <label class="inline">Smooth <input id="smooth" type="range" min="0" max="25" value="0"></label>
+        <label class="inline">Export
+          <select id="exportSize">
+            <option value="1200">1200 px</option>
+            <option value="2400" selected>2400 px</option>
+            <option value="4000">4000 px</option>
+          </select>
+        </label>
+      </div>
+
+      <h2>Film palette</h2>
+      <ul id="swatches" class="swatches"></ul>
+
+      <div class="actions">
+        <button id="dlPng" class="btn" type="button">Download PNG</button>
+        <button id="dlSvg" class="btn" type="button">Download SVG</button>
+        <button id="dlJson" class="btn ghost" type="button">Colours JSON</button>
+        <button id="again" class="btn ghost" type="button">Analyze another film</button>
+      </div>
+      <p id="stats" class="stats"></p>
+    </section>
+
+    <p id="error" class="error" role="alert" hidden></p>
+  </main>
+
+  <footer class="wrap foot">
+    Can't open your file in the browser? Use the
+    <a href="https://github.com/Ovalvoi/Cinema-Color-Pallete-generator#command-line">command-line version</a>.
+    It reads any format ffmpeg supports.
+  </footer>
+</body>
+</html>
